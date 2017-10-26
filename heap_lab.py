@@ -1,3 +1,9 @@
+# Name:        Tyler Davis
+# Course:      CPE 202
+# Instructor:  Dave Parkinson
+# Assignment:  Lab 7
+# Term:        Fall 2017
+
 class MaxHeap:
 
     def __init__(self, capacity = 50):
@@ -41,6 +47,9 @@ class MaxHeap:
 
     def is_empty(self):
         return self.size == 0
+
+    def is_full(self):
+        return self.size + 1 == len(self.heap_array)
 
     def get_heap_cap(self):
         return len(self.heap_array) - 1
