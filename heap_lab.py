@@ -20,20 +20,27 @@ class MaxHeap:
             return False
 
     def find_max(self):
-        return self.heap_array[1]
+        if not self.is_empty():
+            return self.heap_array[1]
+        else:
+            return None
 
     def del_max(self):
-        temp = self.heap_array[1]
-        self.heap_array[1] = self.heap_array[self.size]
-        self.heap_array[self.size] = 0
-        self.size -= 1
-        self.perc_down(1)
-        return temp
+        if not self.is_empty():
+            temp = self.heap_array[1]
+            self.heap_array[1] = self.heap_array[self.size]
+            self.heap_array[self.size] = 0
+            self.size -= 1
+            self.perc_down(1)
+            return temp
+        else:
+            return None
 
     def heap_contents(self):
         return self.heap_array[1 : self.size + 1]
 
     def build_heap(self, alist):
+        self.heap_array = [0] * len(self.heap_array)
         if len(alist) <= len(self.heap_array) - 1:
             self.heap_array[1 : len(alist) + 1] = alist
             self.size += len(alist)
@@ -96,7 +103,7 @@ class MaxHeap:
         self.build_heap(alist)
         max_idx = self.size
         while self.size > 0:    
-            temp = self.heap_array[1]
+            temp = self.find_max()
             self.heap_array[1] = self.heap_array[self.size]
             self.heap_array[self.size] = temp
             self.size -= 1

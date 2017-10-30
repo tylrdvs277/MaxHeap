@@ -24,12 +24,14 @@ class TestLab7(unittest.TestCase):
 
     def test_find_max(self):
         heap = heap_lab.MaxHeap(3)
+        self.assertEqual(heap.find_max(), None)
         for i in range(1, 4):
             heap.insert(i)
         self.assertEqual(heap.find_max(), 3)
 
     def test_del_max(self):
         heap = heap_lab.MaxHeap(4)
+        self.assertEqual(heap.find_max(), None)
         for i in range(1, 5):
             heap.insert(i)
         heap.del_max()
@@ -74,7 +76,23 @@ class TestLab7(unittest.TestCase):
         heap = heap_lab.MaxHeap(len(mylist))
         self.assertEqual(heap.heap_sort_increase(mylist), [8, 9, 12, 15, 16, 20])
 
-    
+    def test_perc_down(self):
+        heap = heap_lab.MaxHeap(6)
+        heap.heap_array = [0, 8, 16, 15, 20, 12, 9]
+        heap.size = 6
+        heap.perc_down(1)
+        self.assertEqual(heap.heap_contents(), [16, 20, 15, 8, 12, 9])
+        heap.perc_down(1)
+        self.assertEqual(heap.heap_contents(), [20, 16, 15, 8, 12, 9])
+
+    def test_perc_up(self):
+        heap = heap_lab.MaxHeap(6)
+        heap.heap_array = [0, 20, 16, 15, 8, 12, 9, 25]
+        heap.size = 7
+        heap.perc_up(heap.size)
+        self.assertEqual(heap.heap_contents(), [25, 16, 20, 8, 12, 9, 15])
+
+
 if __name__ == "__main__":
     unittest.main()
 
