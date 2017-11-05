@@ -8,36 +8,52 @@ class MaxHeap:
 
     def __init__(self, capacity = 50):
         self.heap_array = [0] * (capacity + 1)
+        self.heap_data = [None] * (capacity + 1)
         self.size = 0
 
-    def insert(self, item):
-        if self.size + 1 <= len(self.heap_array) - 1:
+    def insert(self, item, data = None):
+        if self.size < len(self.heap_array) - 1:
             self.heap_array[self.size + 1] = item
+            self.heap_data[self.size + 1] = data
             self.size += 1
             self.perc_up(self.size)
-            return True
         else:
-            return False
+            raise IndexError
 
     def find_max(self):
         if not self.is_empty():
-            return self.heap_array[1]
+            return (self.heap_array[1], self.heap_data[1])
         else:
             return None
+
+    def get_data(self, key):
+        for idx in range(1, self.size + 1):
+            if self.heap_array[idx] == key:
+                return self.heap_data[idx]
+
+    def find(self, key):
+        for idx in range(1, self.size + 1):
+            if self.heap_array[idx] == key:
+                return True
+        return False
 
     def del_max(self):
         if not self.is_empty():
-            temp = self.heap_array[1]
+            key = self.heap_array[1]
+            data = self.heap_data[1]
             self.heap_array[1] = self.heap_array[self.size]
             self.heap_array[self.size] = 0
+            self.heap_data[1] = self.heap_data[self.size]
+            self.heap_data[self.size] = 0
             self.size -= 1
             self.perc_down(1)
-            return temp
+            return (key, data)
         else:
-            return None
+            raise IndexError
 
     def heap_contents(self):
-        return self.heap_array[1 : self.size + 1]
+        return list(zip(self.heap_array[1 : self.size + 1], 
+                        self.heap_data[1 : self.size + 1]))
 
     def build_heap(self, alist):
         self.heap_array = [0] * len(self.heap_array)
@@ -48,9 +64,8 @@ class MaxHeap:
             while idx >= 1:
                 self.perc_down(idx)
                 idx -= 1
-            return True
         else:
-            return False
+            raise IndexError
 
     def is_empty(self):
         return self.size == 0
@@ -72,6 +87,9 @@ class MaxHeap:
                 temp = self.heap_array[idx] 
                 self.heap_array[idx] = self.heap_array[max_child_idx]
                 self.heap_array[max_child_idx] = temp
+                temp = self.heap_data[idx] 
+                self.heap_data[idx] = self.heap_data[max_child_idx]
+                self.heap_data[max_child_idx] = temp
                 idx = max_child_idx
             else:
                 done = True
@@ -84,6 +102,9 @@ class MaxHeap:
                 temp = self.heap_array[idx]
                 self.heap_array[idx] = self.heap_array[parent_idx]
                 self.heap_array[parent_idx] = temp
+                temp = self.heap_data[idx]
+                self.heap_data[idx] = self.heap_data[parent_idx]
+                self.heap_data[parent_idx] = temp
                 idx = parent_idx
             else:
                 done = True
@@ -109,3 +130,27 @@ class MaxHeap:
             self.size -= 1
             self.perc_down(1) 
         return self.heap_array[1 : max_idx + 1]
+
+    def __setitem__(self, key, data):
+        self.insert(key, data)
+
+    def __getitem__(self, key):
+        if type(key) is slice:
+            (start, stop, step) = key.indices(self.size)
+            if start == 0:
+                start = 1
+            if step < 0:
+                start += 1
+            return list(zip(self.heap_array[start : stop + 1 : step],
+                            self.heap_data[start : stop + 1 : step]))
+        return self.get_data(key)
+
+    def __len__(self):
+        return self.size
+
+    def __iter__(self):
+        for idx in range(1, self.size + 1):
+            yield (self.heap_array[idx], self.heap_data[idx])
+
+    def __contains__(self, key):
+        return self.find(key)
